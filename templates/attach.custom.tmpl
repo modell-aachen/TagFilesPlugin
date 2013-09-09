@@ -1,0 +1,12 @@
+%TMPL:INCLUDE{"attach"}%
+%TMPL:INCLUDE{"AttachmentTags"}%
+
+%TMPL:DEF{"comment"}%<div class="foswikiFormStep">
+---+++ %MAKETEXT{"Comment"}%
+<p>
+%MAKETEXT{"Describe the file so other people know what it is."}%
+</p>
+<input class="foswikiInputField" type="text" name="filecomment" value="%FILECOMMENT%" size="70" />
+</div>
+%TMPL:P{"AttachmentTags"}%%TMPL:END%
+

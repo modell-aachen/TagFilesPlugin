@@ -1,0 +1,7 @@
+!noci
+data/System/AttachmentTagsExampleSkinAttachmentTagsTemplate.txt 0644
+data/System/AttachmentTagsExampleSkinSolrSearchViewTemplate.txt 0644
+data/System/TagFilesPlugin.txt 0644 Plugin doc page
+lib/Foswiki/Plugins/TagFilesPlugin.pm 0444 Plugin Perl module
+templates/attach.custom.tmpl 0644
+templates/attachtables.custom.tmpl 0644
