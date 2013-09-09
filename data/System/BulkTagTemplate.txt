@@ -1,0 +1,60 @@
+%META:TOPICPARENT{name="BulkTag"}%
+
+%{"Include this in a page to tag all files in that web"}%
+%TMPL:DEF{"BulkTag"}%
+%TMPL:P{"BulkTagForm" web="%BASEWEB%"}%
+%TMPL:P{"BulkTagScript"}%
+%TMPL:P{"BulkTagStyle"}%
+%TMPL:END%
+
+%{"Generates the form to tag files"}%
+%{"parameter web: Web to search"}%
+%TMPL:DEF{"BulkTagForm"}%
+<form class="BulkTag %TMPL:P{"BulkTagTableClasses"}%">
+%SOLRSEARCH{"-type: %TMPL:P{"BulkTagExcludeType"}% web: %SUBST{text="%web%" pattern="/" format="."}%"
+  header="%TMPL:P{"BulkTagHeader"}%"
+  format="%TMPL:P{BulkTagRow}%"
+  footer="</tbody></table>$nAttachments: $count$n"
+  rows="999"
+}%
+</form>
+<form class="BulkTagSubmitForm" action='%SCRIPTURL{rest}%/TagFilesPlugin/bulkTag' method='post'>
+<input type='hidden' name='tags' value='%FORMATLIST{"%TMPL:P{"BulkTagTags"}%" pattern="(.*)="}%'/>
+%BUTTON{"Update tags!" type="submit"}%
+<div class="inputs"></div></form>
+%TMPL:END%
+
+%{"Exclude these types"}%
+%TMPL:DEF{"BulkTagExcludeType"}%-topic -comment -aqm -map%TMPL:END%
+
+%{"Additional query for solr"}%
+%TMPL:DEF{"BulkTagExtraQuery"}%
+
+%{"Header for the resulting table"}%
+%TMPL:DEF{"BulkTagHeader"}%<table><thead><tr><th> *%MAKETEXT{"Web"}%* </th><th> *%MAKETEXT{"Topic"}%* </th><th> *%MAKETEXT{"Attachment"}%* </th><th> %FORMATLIST{"%TMPL:P{"BulkTagTags"}%" pattern="=(.*)" separator="</th><th>"}% </th></tr></thead><tbody>$n%TMPL:END%
+
+%{"Update these tags"}%
+%TMPL:DEF{"BulkTagTags"}%%TAGOPTIONS%%TMPL:END%
+
+%{"Enable the row only if this condition is met"}%
+%TMPL:DEF{"BulkTagEnableCondition"}%'$webtopic' allows 'CHANGE'%TMPL:END%
+
+%{"Generates the format string for solr"}%
+%TMPL:DEF{"BulkTagRow"}%<tr $percentIF{\"%TMPL:P{"BulkTagEnableCondition"}%\"  then=\"class='bulkTagRowEnabled'\" else=\"class='bulkTagRowDisabled' title='%MAKETEXT{"You may not edit this topic"}%'\"}$percent> <td>$web </td><td> [[$webtopic][$topic]] </td><td> [[$url][$name]] </td><td>
+%FORMATLIST{"%TMPL:P{"BulkTagTags"}%" pattern="(.*)=" separator="</td><td>"
+format="<input type='checkbox' name='$dollarpercentENCODE{\\"$webtopic/$dollarname\\"}$dollarpercent' value='$1'$dollarpercentIF{\\"'$attachment_tags_s' =~ '$1'\\" then=\\"checked='checked'\\"}$dollarpercent />"
+}%</td></tr>$n%TMPL:END%
+
+%{"Load required style sheets"}%
+%TMPL:DEF{"BulkTagStyle"}%
+%ADDTOZONE{"head" id="BulkTagCss" text="<style type=\"text/css\" media=\"all\" src=\"%PUBURLPATH%/%SYSTEMWEB%/TagFilesPlugin/bulktag.css\">
+</style>"}%
+%TMPL:END%
+
+%{"Load required javascript"}%
+%TMPL:DEF{"BulkTagScript"}%
+%JQREQUIRE{"livequery"}%
+%ADDTOZONE{"script" id="BulkTagScript" requires="JQUERYPLUGIN::LIVEQUERY" text="<script type='text/javascript' src='%PUBURLPATH%/%SYSTEMWEB%/TagFilesPlugin/bulktag.js'>
+</script>"}%
+%TMPL:END%
+

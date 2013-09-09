@@ -1,25 +1,26 @@
 %META:TOPICPARENT{name="Plugins"}%
----+ Empty Plugin
+---+ TagFilesPlugin
 
 %SHORTDESCRIPTION%
 
-Learn how to create your own plugin in %SYSTEMWEB%.DevelopingPlugins.
-
 ---++ Plugin Preferences
+Set =TAGOPTIONS= in your =WebPreferences= or =SitePreferences= to enable your desired tags.%BR%
+This should be be a comma separated list where each tag is in the format =tagname=DisplayName=. You always need to provide a =DisplayName= to display (like _select+value_), even if it is identical to the tag.
+Example:
+<pre>
+   %NOP%* Set TAGOPTIONS = form=%%NOP%MAKETEXT{"Form"}%,checklist=%%NOP%MAKETEXT{"Checklist"}%
+</pre>
 
-Plugin preferences should be set using =configure=, as described in
-%SYSTEMWEB%.DevelopingPlugins. You can also use
-[[%SYSTEMWEB%.PreferenceSettings][preference settings]] to define any
-user-controllable configuration. You are strongly advised
-to use the name of the plugin as a prefix, to avoid the risk of namespace
-clashes with other extensions that may try to use the same name.
-
-*BAD*
-   * Set EXAMPLE = Example setting
-   * Set FORMAT  = %d-%m-%y
-*Good*
-   * Set EMPTYPLUGIN_EXAMPLE = Example setting
-   * Set EMPTYPLUGIN_FORMAT  = %d-%m-%y
+---++ Bulk tag
+In order to manage your files there is a _BulkTag_ functionality provided. In order to use it
+   * either copy %SYSTEMWEB%.BulkTag to the desired web
+   * or create a topic and set its =VIEW_TEMPLATE= to BulkTagView
+   * or create a =VIEW_TEMPLATE=, include =BulkTag= have a section with <pre>
+%%NOP%TMPL:P{"BulkTagForm" web="YourWeb"}%
+%%NOP%TMPL:P{"BulkTagScript"}%
+%%NOP%TMPL:P{"BulkTagStyle"}%
+</pre>
+Whichever you choose, for customization create your own =CustomSkinBulkTagTemplate=.
 
 <!--
 One line description, required for extensions repository catalog.

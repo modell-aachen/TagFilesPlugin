@@ -8,6 +8,8 @@ use warnings;
 
 use Foswiki::Func    ();    # The plugins API
 use Foswiki::Plugins ();    # For the API version
+use Error ':try';
+use URI::Escape;
 
 our $VERSION          = '$Rev: 7808 (2010-06-15) $';
 our $RELEASE          = '0.0.1';
@@ -26,6 +28,10 @@ sub initPlugin {
             __PACKAGE__, ' and Plugins.pm' );
         return 0;
     }
+
+    Foswiki::Func::registerRESTHandler(
+        'bulkTag', \&_restBulkTag,
+        http_allow => 'POST' );
 
     # Copy/Paste/Modify from MetaCommentPlugin
     # SMELL: this is not reliable as it depends on plugin order
@@ -66,7 +72,7 @@ sub formatTags {
         $tags->{$tag} = 1;
     }
     return unless scalar $tags;
-    return join(',', keys $tags);
+    return join(',', keys %$tags);
 }
 
 # Unfortunately "changeproperties" ("Change comment only") bypasses the
@@ -101,9 +107,134 @@ sub indexAttachmentHandler {
     if($attachment->{tags}) {
         my @taglist = split(',', $attachment->{tags});
         $doc->add_fields( attachment_tags_lst => \@taglist );
+        $doc->add_fields( attachment_tags_s => join(',', @taglist) );
     }
 }
 
+# Tag a bunch of files.
+# The tags being set are expected in parameter 'tags' (comma separated list).
+# If a file should be tagged it must send the keyword 'BulkTagUpdate' followed
+# by the desired tags. The name should be web.topic/attachment with subwebs
+# separated by dots (not slashes)
+# For example:
+# <input name='tags' value='Test,MyTag' />
+# <input name='Main.SubWeb.MyTopic/MyFile.txt' value='BulkTagUpdate'/>
+# <input name='Main.SubWeb.MyTopic/MyFile.txt' value='Test' />
+# In this case the file MyFile.txt in Main/SubWeb/MyTopic will get the tag
+# 'Test' but the tag 'MyTag' will be cleared. Any other tags will remain.
+sub _restBulkTag {
+    my ($session) = @_;
+
+    my $query = Foswiki::Func::getCgiQuery();
+    return unless $query;
+    my $param = $query->{param};
+    return unless $param;
+
+    # get tags handled in this request
+    my $tags = $param->{tags};
+    return 'Wrong parameter "tags"' unless $tags && scalar @$tags == 1;
+    my @tags = split( ',', $tags->[0] );
+    @tags = map { my $t = $_; $t =~ s#^\s*|\s*$##; $t } @tags;
+
+    my $report = '';
+
+    my $dirtyTopics = {}; # this will cache the changed topics in order to
+                          # prevent multiple writes on multiple changes to a
+                          # single topic
+
+    foreach my $p ( keys $param ) {
+        my $values = $param->{ $p };
+        next unless $values && scalar @$values;
+
+        next unless shift( $values ) eq 'BulkTagUpdate';
+
+        # get web, topic and attachmentname from parameter
+        my $webtopicattachment = uri_unescape($p);
+        unless ( $webtopicattachment =~ m#([^/]+)/(.*)# ) {
+            $report .= '%BR%%MAKETEXT{"bad attachment name: [_1]" args="'."$webtopicattachment\"}%";
+            next;
+        }
+        my $webtopic = $1;
+        my $attachment = $2;
+        my ( $web, $topic ) = Foswiki::Func::normalizeWebTopicName( undef, $webtopic );
+
+        # read topic
+        my ( $meta, $text );
+        { # scope
+            my $cached = $dirtyTopics->{"$web.$topic"};
+            if ( $cached ) {
+                ( $meta, $text ) = @$cached;
+            } else {
+                unless ( Foswiki::Func::topicExists( $web, $topic ) ) {
+                    $report .= '%BR%%MAKETEXT{"Topic does not exist: [_1] with attachment: [_2]" args="'."$web.$topic,$attachment\"}%";
+                    next;
+                }
+                ( $meta, $text ) = Foswiki::Func::readTopic( $web, $topic );
+            }
+        }
+
+        # get current file tags
+        my $file = $meta->get( 'FILEATTACHMENT', $attachment );
+        unless ( $file ) {
+            $report .= '%BR%%MAKETEXT"File not found: [_1]" args="'."$web.$topic/$attachment\"}%";
+            next;
+        }
+        my $filetags = $file->{tags} || '';
+
+        # check for changed tags
+        my $dirty = 0;
+        foreach my $eachTag ( @tags ) {
+            # is $eachTag requested to be set?
+            my $setTag = 0;
+            foreach my $handeledTag ( @$values ) {
+                $setTag = 1 if $handeledTag eq $eachTag;
+            }
+
+            # is $eachTag already set in file?
+            my $hasTag = ($filetags =~ m#\Q$eachTag\E#)?1:0;
+
+            next if $hasTag eq $setTag;
+
+            if ( $setTag ) {
+                # add $eachTag
+                $filetags .= ',' if $filetags;
+                $filetags .= $eachTag;
+            } else {
+                # remove $eachTag
+                $filetags =~ s#,\Q$eachTag\E,#,#;
+                $filetags =~ s#^\Q$eachTag\E,##;
+                $filetags =~ s#,\Q$eachTag\E$##;
+                $filetags =~ s#^\Q$eachTag\E$##;
+            }
+            # this attachment has changed
+            $dirty = 1;
+        }
+
+        # only mark for save if tags actually changed
+        if ( $dirty ) {
+            $file->{tags} = $filetags;
+            $meta->putKeyed( 'FILEATTACHMENT', $file );
+            my @cache = ( $meta, $text, $web, $topic );
+            $dirtyTopics->{"$web.$topic"} = \@cache;
+            $report .= '%BR%%MAKETEXT{"Updated [_1] to \'[_2]\'" args="'." $web.$topic/$attachment,$filetags\"}%";
+        }
+    }
+
+    # save changed topics
+    $report .= '%MAKETEXT{"Nothing changed."}%' unless scalar keys $dirtyTopics;
+    foreach my $dirt ( keys $dirtyTopics ) {
+        my $cached = $dirtyTopics->{"$dirt"};
+        my ( $meta, $text, $web, $topic ) = @$cached;
+        try {
+            Foswiki::Func::saveTopic( $web, $topic, $meta, $text, {minor => 1, dontlog => 1, ignorepermissions => 1} );
+        } catch Error with {
+            $report .= '%BR%%RED%%MAKETEXT{"Could not save [_1]" args="'."$web.$topic\"}%%ENDCOLOR%";
+        }
+    }
+
+    $report = '<html><head><title>%MAKETEXT{"Tags updated..."}%</title></head><body>'.$report.'</body></html>';
+    return Foswiki::Func::expandCommonVariables( $report );
+}
 
 1;
 
