@@ -12,7 +12,7 @@ use Error ':try';
 use URI::Escape;
 
 our $VERSION          = '$Rev: 7808 (2010-06-15) $';
-our $RELEASE          = '0.0.1';
+our $RELEASE          = '0.0.2';
 
 our $SHORTDESCRIPTION = 'Tag files in your wiki.';
 
