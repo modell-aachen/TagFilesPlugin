@@ -7,7 +7,7 @@ data/System/BulkTagViewTemplate.txt 0644
 data/System/KvpSkinBulkTagTemplate.txt 0644
 data/System/TagFilesPlugin.txt 0644 Plugin doc page
 lib/Foswiki/Plugins/TagFilesPlugin.pm 0444 Plugin Perl module
-pub/System/bulktag.css 0644
-pub/System/bulktag.js 0644
+pub/System/TagFilesPlugin/bulktag.css 0644
+pub/System/TagFilesPlugin/bulktag.js 0644
 templates/attach.custom.tmpl 0644
 templates/attachtables.custom.tmpl 0644
