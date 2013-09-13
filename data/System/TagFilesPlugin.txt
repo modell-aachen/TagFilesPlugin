@@ -30,6 +30,12 @@ One line description, required for extensions repository catalog.
 ---++ Installation
 %$INSTALL_INSTRUCTIONS%
 
+---+++ CKEditor
+You will need to create a custom CKEPLUGIN_INIT_TOPIC and add the property
+<pre>
+qwiki_tags : "%TAGOPTIONS%"
+</pre>
+
 ---++ Plugin Info
 
 |  Author: | Foswiki:Main.PluginAuthor |

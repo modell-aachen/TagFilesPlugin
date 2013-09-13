@@ -11,7 +11,7 @@
 %{"parameter web: Web to search"}%
 %TMPL:DEF{"BulkTagForm"}%
 <form class="BulkTag %TMPL:P{"BulkTagTableClasses"}%">
-%SOLRSEARCH{"-type: %TMPL:P{"BulkTagExcludeType"}% web: %SUBST{text="%web%" pattern="/" format="."}%"
+%SOLRSEARCH{"%TMPL:P{"BulkTagQuery"}% web: %SUBST{text="%web%" pattern="/" format="."}%"
   header="%TMPL:P{"BulkTagHeader"}%"
   format="%TMPL:P{BulkTagRow}%"
   footer="</tbody></table>$nAttachments: $count$n"
@@ -24,11 +24,8 @@
 <div class="inputs"></div></form>
 %TMPL:END%
 
-%{"Exclude these types"}%
-%TMPL:DEF{"BulkTagExcludeType"}%-topic -comment -aqm -map%TMPL:END%
-
-%{"Additional query for solr"}%
-%TMPL:DEF{"BulkTagExtraQuery"}%
+%{"Query for solr"}%
+%TMPL:DEF{"BulkTagQuery"}%-type topic -type comment -type aqm -type map%TMPL:END%
 
 %{"Header for the resulting table"}%
 %TMPL:DEF{"BulkTagHeader"}%<table><thead><tr><th> *%MAKETEXT{"Web"}%* </th><th> *%MAKETEXT{"Topic"}%* </th><th> *%MAKETEXT{"Attachment"}%* </th><th> %FORMATLIST{"%TMPL:P{"BulkTagTags"}%" pattern="=(.*)" separator="</th><th>"}% </th></tr></thead><tbody>$n%TMPL:END%
