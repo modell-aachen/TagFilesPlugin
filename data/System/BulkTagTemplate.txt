@@ -44,14 +44,12 @@ format="<input type='checkbox' name='$dollarpercentENCODE{\\"$webtopic/$dollarna
 
 %{"Load required style sheets"}%
 %TMPL:DEF{"BulkTagStyle"}%
-%ADDTOZONE{"head" id="BulkTagCss" text="<style type=\"text/css\" media=\"all\" src=\"%PUBURLPATH%/%SYSTEMWEB%/TagFilesPlugin/bulktag.css\">
-</style>"}%
+%ADDTOZONE{"head" id="BulkTagCss" text="<style type=\"text/css\" media=\"all\">@import url(\"%PUBURLPATH%/%SYSTEMWEB%/TagFilesPlugin/bulktag.css\");</style>"}%
 %TMPL:END%
 
 %{"Load required javascript"}%
 %TMPL:DEF{"BulkTagScript"}%
 %JQREQUIRE{"livequery"}%
-%ADDTOZONE{"script" id="BulkTagScript" requires="JQUERYPLUGIN::LIVEQUERY" text="<script type='text/javascript' src='%PUBURLPATH%/%SYSTEMWEB%/TagFilesPlugin/bulktag.js'>
-</script>"}%
+%ADDTOZONE{"script" id="BulkTagScript" requires="JQUERYPLUGIN::LIVEQUERY" text="<script type='text/javascript' src='%PUBURLPATH%/%SYSTEMWEB%/TagFilesPlugin/bulktag.js'></script>"}%
 %TMPL:END%
 
