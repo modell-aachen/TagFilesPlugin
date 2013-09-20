@@ -142,11 +142,11 @@ sub _restBulkTag {
                           # prevent multiple writes on multiple changes to a
                           # single topic
 
-    foreach my $p ( keys $param ) {
+    foreach my $p ( keys %$param ) {
         my $values = $param->{ $p };
         next unless $values && scalar @$values;
 
-        next unless shift( $values ) eq 'BulkTagUpdate';
+        next unless shift( @$values ) eq 'BulkTagUpdate';
 
         # get web, topic and attachmentname from parameter
         my $webtopicattachment = uri_unescape($p);
@@ -221,8 +221,8 @@ sub _restBulkTag {
     }
 
     # save changed topics
-    $report .= '%MAKETEXT{"Nothing changed."}%' unless scalar keys $dirtyTopics;
-    foreach my $dirt ( keys $dirtyTopics ) {
+    $report .= '%MAKETEXT{"Nothing changed."}%' unless scalar keys %$dirtyTopics;
+    foreach my $dirt ( keys %$dirtyTopics ) {
         my $cached = $dirtyTopics->{"$dirt"};
         my ( $meta, $text, $web, $topic ) = @$cached;
         try {
