@@ -19,6 +19,7 @@
 }%
 </form>
 <form class="BulkTagSubmitForm" action='%SCRIPTURL{rest}%/TagFilesPlugin/bulkTag' method='post'>
+<input type='hidden' name='backlink' value='%WEB%.%TOPIC%' />
 <input type='hidden' name='tags' value='%FORMATLIST{"%TMPL:P{"BulkTagTags"}%" pattern="(.*)="}%'/>
 %BUTTON{"Update tags!" type="submit"}%
 <div class="inputs"></div></form>

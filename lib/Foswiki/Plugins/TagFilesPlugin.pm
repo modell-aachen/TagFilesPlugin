@@ -136,6 +136,9 @@ sub _restBulkTag {
     my @tags = split( ',', $tags->[0] );
     @tags = map { my $t = $_; $t =~ s#^\s*|\s*$##; $t } @tags;
 
+    my $backlink = $query->param( 'backlink' ) || '%WIKILOGOURL%';
+    Foswiki::Func::setPreferencesValue( 'BACKLINK', $backlink );
+
     my $report = '';
 
     my $dirtyTopics = {}; # this will cache the changed topics in order to
@@ -232,8 +235,11 @@ sub _restBulkTag {
         }
     }
 
-    $report = '<html><head><title>%MAKETEXT{"Tags updated..."}%</title></head><body>'.$report.'</body></html>';
-    return Foswiki::Func::expandCommonVariables( $report );
+    my $display = Foswiki::Func::loadTemplate( 'BulkTagReport' );
+    Foswiki::Func::setPreferencesValue( 'REPORT', $report );
+    $display = Foswiki::Func::expandCommonVariables( $display );
+    $display = Foswiki::Func::renderText( $display );
+    return Foswiki::Func::expandCommonVariables( $display );
 }
 
 1;
