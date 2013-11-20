@@ -1,0 +1,50 @@
+%META:TOPICPARENT{name="Plugins"}%
+---+ TagFilesPlugin
+
+%SHORTDESCRIPTION%
+
+---++ Plugin Preferences
+Set =TAGOPTIONS= in your =WebPreferences= or =SitePreferences= to enable your desired tags.%BR%
+This should be be a comma separated list where each tag is in the format =tagname=DisplayName=. You always need to provide a =DisplayName= to display (like _select+value_), even if it is identical to the tag.
+Example:
+<pre>
+   %NOP%* Set TAGOPTIONS = form=%%NOP%MAKETEXT{"Form"}%,checklist=%%NOP%MAKETEXT{"Checklist"}%
+</pre>
+
+---++ Bulk tag
+In order to manage your files there is a _BulkTag_ functionality provided. In order to use it
+   * either copy %SYSTEMWEB%.BulkTag to the desired web
+   * or create a topic and set its =VIEW_TEMPLATE= to BulkTagView
+   * or create a =VIEW_TEMPLATE=, include =BulkTag= have a section with <pre>
+%%NOP%TMPL:P{"BulkTagForm" web="YourWeb"}%
+%%NOP%TMPL:P{"BulkTagScript"}%
+%%NOP%TMPL:P{"BulkTagStyle"}%
+</pre>
+Whichever you choose, for customization create your own =CustomSkinBulkTagTemplate=.
+
+<!--
+One line description, required for extensions repository catalog.
+   * Set SHORTDESCRIPTION = Tag files in your wiki.
+-->
+
+---++ Installation
+%$INSTALL_INSTRUCTIONS%
+
+---+++ CKEditor
+You will need to create a custom CKEPLUGIN_INIT_TOPIC and add the property
+<pre>
+qwiki_tags : "%TAGOPTIONS%"
+</pre>
+
+---++ Plugin Info
+
+|  Author: | Foswiki:Main.PluginAuthor |
+|  Copyright: | &copy; 2012, Foswiki Contributors |
+|  License: | GPL ([[http://www.gnu.org/copyleft/gpl.html][GNU General Public License]]) |
+|  Release: | %$RELEASE% |
+|  Version: | %$VERSION% |
+|  Change&nbsp;History: | <!-- versions below in reverse order -->&nbsp; |
+|  XX Mmm 20XX (1.0) | Description of change |
+|  Home: | http://foswiki.org/Extensions/%TOPIC% |
+|  Support: | http://foswiki.org/Support/%TOPIC% |
+

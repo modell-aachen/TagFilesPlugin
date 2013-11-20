@@ -1,0 +1,8 @@
+%META:TOPICPARENT{name="BulkTagTemplate"}%
+%TMPL:INCLUDE{"view"}%
+%TMPL:INCLUDE{"BulkTag"}%
+
+%TMPL:DEF{"content"}%
+%TMPL:P{"BulkTag"}%
+%TMPL:END%
+

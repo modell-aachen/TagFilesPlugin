@@ -1,0 +1,6 @@
+%TMPL:INCLUDE{"attachtables"}%
+
+%TMPL:DEF{ATTACH:files:header(toprow)}%%TMPL:PREV% *%MAKETEXT{"Tags"}%* |%TMPL:END%
+
+%TMPL:DEF{ATTACH:files:row(basic)}%%TMPL:PREV% %QUERY{"attachments[name='%A_FILE%'].tags"}% |%TMPL:END%
+

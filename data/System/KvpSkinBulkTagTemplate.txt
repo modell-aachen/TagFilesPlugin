@@ -1,0 +1,5 @@
+%META:TOPICPARENT{name="BulkTagTemplate"}%
+%TMPL:INCLUDE{"BulkTag"}%
+
+%TMPL:DEF{"BulkTagEnableCondition"}%$percentWORKFLOWEDITPERM{web=\"$web\" topic=\"$topic\"}$percent%TMPL:END%
+

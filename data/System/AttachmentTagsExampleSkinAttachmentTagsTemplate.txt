@@ -1,0 +1,27 @@
+%TMPL:DEF{"AttachmentTagsForm"}%
+%TMPL:P{"attachmentTagsCheckbox" available="%TAGOPTIONS%" attachmenttags="%attachmenttags%"}%
+%TMPL:END%
+
+%TMPL:DEF{"AlternativeFormsExample"}%
+<input type="text" name="tags" class="jqTextboxList" size="20" value="%QUERY{"attachments[name='%FILENAME%'].tags"}%"/>%JQREQUIRE{"textboxlist"}%
+%TMPL:P{"attachmentTagsSelect" available="Formular, Other"}%
+%TMPL:END%
+
+%TMPL:DEF{"AttachmentTags"}%<div class="foswikiFormStep">
+%IF{"defined TAGOPTIONS" then="
+---+++ %MAKETEXT{"Tag file"}%
+<p>
+%MAKETEXT{"Give appropriate tags, so the file can be found more easily:"}%
+</p>
+$percentTMPL:P{\"AttachmentTagsForm\" attachmenttags=\"%TMPL:P{"attachmenttags"}%\"}$percent
+"}%</div>%TMPL:END%
+
+%TMPL:DEF{"attachmenttags"}%%QUERY{"attachments[name='%FILENAME%'].tags"}%%TMPL:END%
+
+%TMPL:DEF{"attachmentTagsSelect"}%<select name="tags">%TMPL:P{"attachmentTagsSOptions" available="%available%"}%</select>%TMPL:END%
+
+%TMPL:DEF{"attachmentTagsSOptions"}%%FORMATLIST{"%available%" split="," separator="" format="<option$marker>$1</option>" marker=" selected='selected'" selection="%TMPL:P{"attachmenttags"}%"}%%TMPL:END%
+
+%TMPL:DEF{"attachmentTagsCheckbox"}%
+%FORMATLIST{"%available%" split="\s*,\s*" separator="" pattern="(.*)=(.*?)\s*$" format="<input type='checkbox' name='tags' value='$1'$marker>$2</option>" marker=" checked='checked'" selection="^(?:%SUBST{text="%attachmenttags%" pattern="\s*,\s*" format="|"}%)="}%%TMPL:END%
+
