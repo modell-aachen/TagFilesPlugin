@@ -1,0 +1,4 @@
+%META:TOPICPARENT{name="TagFilesPlugin"}%
+
+   * Set VIEW_TEMPLATE = BulkTagView
+

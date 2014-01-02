@@ -1,0 +1,9 @@
+%TMPL:INCLUDE{"oops"}%
+
+%TMPL:DEF{"heading"}%%MAKETEXT{"TagFilesPlugin report"}%%TMPL:END%
+
+%TMPL:DEF{"topicactionbuttons"}%[[%BACKLINK%][%MAKETEXT{"Ok"}%]]%TMPL:END%
+
+%TMPL:DEF{"content"}%
+%REPORT%
+%TMPL:END%

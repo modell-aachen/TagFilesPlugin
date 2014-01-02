@@ -1,0 +1,8 @@
+tr.bulkTagRowDisabled {
+    font-style:italic;
+    background-color: #DDD;
+}
+tr.UpdateTag {
+    background-color: #CFC;
+}
+

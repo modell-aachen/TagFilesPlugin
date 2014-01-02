@@ -1,0 +1,26 @@
+%TMPL:INCLUDE{"SolrSearchView"}%
+
+%{<verbatim class="tml">}%
+%TMPL:DEF{"solr::facets"}%%TMPL:PREV%,
+  %MAKETEXT{"File Tags"}%=attachment_tags_lst
+%TMPL:END%
+%{</verbatim>}%
+
+%{<verbatim class="tml">}%
+%TMPL:DEF{"solr::disjunctivefacets"}%%TMPL:PREV%,attachment_tags_lst%TMPL:END%
+%{</verbatim>}%
+
+%{<verbatim class="tml">}%
+%TMPL:DEF{"modacExtraFacets"}%%TMPL:PREV%
+%TMPL:P{"solr::facet"
+    id="attachment_tags_lst"
+    format="$key&nbsp;($count)"
+    value="$id:$key"
+    input="checkbox"
+    include="%TMPL:P{"solr::facet::include::attachment_tags_lst"}%"
+    exclude="%TMPL:P{"solr::facet::exclude::attachment_tags_lst"}%"
+    extraclass=""
+    pageropts=""
+  }%
+%TMPL:END%
+%{</verbatim>}%
