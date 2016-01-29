@@ -153,6 +153,9 @@ sub _restBulkTag {
 
         # get web, topic and attachmentname from parameter
         my $webtopicattachment = uri_unescape($p);
+        if( $webtopicattachment ne $p && $Foswiki::UNICODE ) {
+            $webtopicattachment = Foswiki::Store::decode( $webtopicattachment );
+        }
         unless ( $webtopicattachment =~ m#([^/]+)/(.*)# ) {
             $report .= '%BR%%MAKETEXT{"bad attachment name: [_1]" args="'."$webtopicattachment\"}%";
             next;
