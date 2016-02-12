@@ -26,7 +26,7 @@
 %TMPL:END%
 
 %{"Query for solr"}%
-%TMPL:DEF{"BulkTagQuery"}%-type: topic -type: comment -type: aqm -type: map -type: action%TMPL:END%
+%TMPL:DEF{"BulkTagQuery"}%-type: topic -type: comment -name:__flowchart_* -name:__provis_* -type: aqm -type: map -type: action%TMPL:END%
 
 %{"Header for the resulting table"}%
 %TMPL:DEF{"BulkTagHeader"}%<table><thead><tr><th> *%MAKETEXT{"Web"}%* </th><th> *%MAKETEXT{"Topic"}%* </th><th> *%MAKETEXT{"Attachment"}%* </th><th> %FORMATLIST{"%TMPL:P{"BulkTagTags"}%" pattern="=(.*)" separator="</th><th>"}% </th></tr></thead><tbody>$n%TMPL:END%
