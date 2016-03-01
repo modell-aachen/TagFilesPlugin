@@ -23,5 +23,5 @@ $percentTMPL:P{\"AttachmentTagsForm\" attachmenttags=\"%TMPL:P{"attachmenttags"}
 %TMPL:DEF{"attachmentTagsSOptions"}%%FORMATLIST{"%available%" split="," separator="" format="<option$marker>$1</option>" marker=" selected='selected'" selection="%TMPL:P{"attachmenttags"}%"}%%TMPL:END%
 
 %TMPL:DEF{"attachmentTagsCheckbox"}%
-%FORMATLIST{"%available%" split="\s*,\s*" separator="" pattern="(.*)=(.*?)\s*$" format="<input type='checkbox' name='tags' value='$1'$marker>$2</option>" marker=" checked='checked'" selection="^(?:%SUBST{text="%attachmenttags%" pattern="\s*,\s*" format="|"}%)="}%%TMPL:END%
+<!-- dummy to allow untagging: --><input type='hidden' name='tags' value='!notag!' /><!-- /dummy -->%FORMATLIST{"%available%" split="\s*,\s*" separator="" pattern="(.*)=(.*?)\s*$" format="<label><input type='checkbox' name='tags' value='$1'$marker>$2</label>" marker=" checked='checked'" selection="^(?:%SUBST{text="%attachmenttags%" pattern="\s*,\s*" format="|"}%)="}%%TMPL:END%
 
