@@ -54,7 +54,14 @@ sub beforeUploadHandler {
 
     my $query = Foswiki::Func::getCgiQuery();
     my $tags = formatTags( $query->{param}->{tags} );
-    $attrHashRef->{tags} = $tags if defined $tags;
+    if(defined $tags) {
+        $attrHashRef->{tags} = $tags if $tags ne '';
+    } elsif (Foswiki::Func::topicExists($meta->web, $meta->topic)) {
+        # uploader did not handle plugin, loading old tags
+        my ( $readmeta, $readtext ) = Foswiki::Func::readTopic( $meta->web, $meta->topic );
+        my $file = $readmeta->get( 'FILEATTACHMENT', $attrHashRef->{attachment} );
+        $attrHashRef->{tags} = $file->{tags} if $file && $file->{tags};
+    }
 }
 
 # Format the taglist.
@@ -72,6 +79,7 @@ sub formatTags {
         $tags->{$tag} = 1;
     }
     return unless scalar $tags;
+    delete $tags->{'!notag!'} if $tags->{'!notag!'};
     return join(',', keys %$tags);
 }
 
